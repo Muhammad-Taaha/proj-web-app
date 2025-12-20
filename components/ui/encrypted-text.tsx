@@ -6,21 +6,10 @@ import { cn } from "@/lib/utils";
 type EncryptedTextProps = {
   text: string;
   className?: string;
-  /**
-   * Time in milliseconds between revealing each subsequent real character.
-   * Lower is faster. Defaults to 50ms per character.
-   */
   revealDelayMs?: number;
-  /** Optional custom character set to use for the gibberish effect. */
   charset?: string;
-  /**
-   * Time in milliseconds between gibberish flips for unrevealed characters.
-   * Lower is more jittery. Defaults to 50ms.
-   */
   flipDelayMs?: number;
-  /** CSS class for styling the encrypted/scrambled characters */
   encryptedClassName?: string;
-  /** CSS class for styling the revealed characters */
   revealedClassName?: string;
 };
 
@@ -57,18 +46,21 @@ export const EncryptedText: React.FC<EncryptedTextProps> = ({
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true });
 
+  // 1. Add a mounted state to prevent hydration mismatch
+  const [hasMounted, setHasMounted] = useState(false);
   const [revealCount, setRevealCount] = useState<number>(0);
+  
   const animationFrameRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
   const lastFlipTimeRef = useRef<number>(0);
-  const scrambleCharsRef = useRef<string[]>(
-    text ? generateGibberishPreservingSpaces(text, charset).split("") : [],
-  );
+  
+  // 2. Initialize with an empty array or the real text so Server/Client match initially
+  const scrambleCharsRef = useRef<string[]>([]);
 
   useEffect(() => {
+    setHasMounted(true);
     if (!isInView) return;
 
-    // Reset state for a fresh animation whenever dependencies change
     const initial = text
       ? generateGibberishPreservingSpaces(text, charset)
       : "";
@@ -81,7 +73,6 @@ export const EncryptedText: React.FC<EncryptedTextProps> = ({
 
     const update = (now: number) => {
       if (isCancelled) return;
-
       const elapsedMs = now - startTimeRef.current;
       const totalLength = text.length;
       const currentRevealCount = Math.min(
@@ -90,19 +81,14 @@ export const EncryptedText: React.FC<EncryptedTextProps> = ({
       );
 
       setRevealCount(currentRevealCount);
+      if (currentRevealCount >= totalLength) return;
 
-      if (currentRevealCount >= totalLength) {
-        return;
-      }
-
-      // Re-randomize unrevealed scramble characters on an interval
       const timeSinceLastFlip = now - lastFlipTimeRef.current;
       if (timeSinceLastFlip >= Math.max(0, flipDelayMs)) {
         for (let index = 0; index < totalLength; index += 1) {
           if (index >= currentRevealCount) {
             if (text[index] !== " ") {
-              scrambleCharsRef.current[index] =
-                generateRandomCharacter(charset);
+              scrambleCharsRef.current[index] = generateRandomCharacter(charset);
             } else {
               scrambleCharsRef.current[index] = " ";
             }
@@ -110,17 +96,13 @@ export const EncryptedText: React.FC<EncryptedTextProps> = ({
         }
         lastFlipTimeRef.current = now;
       }
-
       animationFrameRef.current = requestAnimationFrame(update);
     };
 
     animationFrameRef.current = requestAnimationFrame(update);
-
     return () => {
       isCancelled = true;
-      if (animationFrameRef.current !== null) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
+      if (animationFrameRef.current !== null) cancelAnimationFrame(animationFrameRef.current);
     };
   }, [isInView, text, revealDelayMs, charset, flipDelayMs]);
 
@@ -135,12 +117,12 @@ export const EncryptedText: React.FC<EncryptedTextProps> = ({
     >
       {text.split("").map((char, index) => {
         const isRevealed = index < revealCount;
-        const displayChar = isRevealed
-          ? char
-          : char === " "
-            ? " "
-            : (scrambleCharsRef.current[index] ??
-              generateRandomCharacter(charset));
+        
+        // 3. Logic Change: If not mounted, show original char (matches Server).
+        // If mounted but not revealed, show scramble.
+        const displayChar = !hasMounted || isRevealed
+          ? char 
+          : (scrambleCharsRef.current[index] || char);
 
         return (
           <span

@@ -90,7 +90,7 @@ export default function Home() {
           />
           <Feature
             icon={<Activity size={28} />}
-            title="Autoencoder Based"
+            title="XGBoost Based"
             desc="Unsupervised deep learning trained on normal traffic behavior."
           />
           <Feature
