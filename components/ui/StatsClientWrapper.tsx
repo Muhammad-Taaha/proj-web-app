@@ -1,4 +1,3 @@
-// components/ui/StatsClientWrapper.tsx
 "use client";
 
 import React from "react";
@@ -21,11 +20,7 @@ export const StatsClientWrapper: React.FC<StatsClientWrapperProps> = ({ open, se
   return (
     <>
       <div className="mt-32 w-full relative">
-        <GoogleGeminiEffect
-          pathLengths={pathLengths}
-          title="Explore Gemini AI Visuals"
-          description="Scroll down and watch these dynamic SVG paths animate beautifully with motion!"
-        />
+        <GoogleGeminiEffect pathLengths={pathLengths} />
       </div>
 
       <ExplanationModal
