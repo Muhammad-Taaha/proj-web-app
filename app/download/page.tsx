@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
 import { DownloadCloud, GitBranch, Link, CheckCircle, Loader, BookOpen } from 'lucide-react';
 import { useRouter } from "next/navigation";
 
-// --- Download Option Card Component ---
+// --- Props Interface ---
 interface DownloadOptionCardProps {
-  icon: FC<any>; // Lucide icon component
+  icon: FC<any>; // React component (Lucide icon)
   title: string;
   description: string;
   onClick?: () => void;
@@ -16,6 +16,7 @@ interface DownloadOptionCardProps {
   buttonText?: string;
 }
 
+// --- Download Option Card Component ---
 const DownloadOptionCard: FC<DownloadOptionCardProps> = ({
   icon: Icon,
   title,
@@ -24,47 +25,52 @@ const DownloadOptionCard: FC<DownloadOptionCardProps> = ({
   colorClass = 'indigo',
   link,
   buttonText
-}) => (
-  <motion.div
-    whileHover={{ 
-      scale: 1.05, 
-      boxShadow: `0 0 40px ${colorClass === 'indigo' ? 'rgba(99,102,241,0.9)' : 'rgba(0,255,255,0.9)'}`,
-      transition: { duration: 0.2 } 
-    }}
-    whileTap={{ scale: 0.98 }}
-    initial={{ opacity: 0, y: 30 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ type: "spring", stiffness: 150, duration: 0.5 }}
-    className={`group p-6 bg-gray-900/90 border border-${colorClass}-600/60 rounded-xl cursor-pointer transition duration-500 relative overflow-hidden shadow-xl`}
-    onClick={onClick}
-  >
-    <div
-      className={`absolute -inset-2 opacity-0 transition-opacity duration-500 group-hover:opacity-10`}
-      style={{ backgroundImage: `radial-gradient(circle at 50% 0, var(--tw-color-${colorClass}-500), transparent)` }}
-    />
-    <div className="flex items-start space-x-4">
-      {Icon && <Icon className={`h-8 w-8 text-${colorClass}-400 mt-1 drop-shadow-md`} />}
-      <div>
-        <h3 className="text-xl font-bold mb-1 text-white tracking-wider">{title}</h3>
-        <p className="text-sm text-gray-400 mb-4 font-extralight">{description}</p>
-        {buttonText && (
-          <button 
-            className={`px-5 py-2 text-sm font-semibold rounded-full 
-                        bg-gradient-to-r from-${colorClass}-500 to-${colorClass}-700 
-                        text-white shadow-xl transition duration-300 transform 
-                        hover:scale-105 hover:shadow-[0_0_20px_rgba(99,102,241,0.9)]`}
-            onClick={(e) => { 
-              e.stopPropagation();
-              if (link) window.open(link, '_blank');
-            }}
-          >
-            {buttonText}
-          </button>
-        )}
+}) => {
+  // Tailwind class mapping
+  const borderClass = colorClass === 'indigo' ? 'border-indigo-600/60' : 'border-cyan-600/60';
+  const iconClass = colorClass === 'indigo' ? 'text-indigo-400' : 'text-cyan-400';
+  const btnGradient = colorClass === 'indigo' ? 'from-indigo-500 to-indigo-700' : 'from-cyan-500 to-cyan-700';
+  const glowColor = colorClass === 'indigo' ? 'rgba(99,102,241,0.9)' : 'rgba(0,255,255,0.9)';
+
+  return (
+    <motion.div
+      whileHover={{ 
+        scale: 1.05, 
+        boxShadow: `0 0 40px ${glowColor}`,
+        transition: { duration: 0.2 } 
+      }}
+      whileTap={{ scale: 0.98 }}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 150, duration: 0.5 }}
+      className={`group p-6 bg-gray-900/90 ${borderClass} rounded-xl cursor-pointer transition duration-500 relative overflow-hidden shadow-xl`}
+      onClick={onClick}
+    >
+      <div
+        className={`absolute -inset-2 opacity-0 transition-opacity duration-500 group-hover:opacity-10`}
+        style={{ backgroundImage: `radial-gradient(circle at 50% 0, var(--tw-color-${colorClass}-500), transparent)` }}
+      />
+      <div className="flex items-start space-x-4">
+        {Icon && <Icon className={`h-8 w-8 ${iconClass} mt-1 drop-shadow-md`} />}
+        <div>
+          <h3 className="text-xl font-bold mb-1 text-white tracking-wider">{title}</h3>
+          <p className="text-sm text-gray-400 mb-4 font-extralight">{description}</p>
+          {buttonText && (
+            <button 
+              className={`px-5 py-2 text-sm font-semibold rounded-full bg-gradient-to-r ${btnGradient} text-white shadow-xl transition duration-300 transform hover:scale-105 hover:shadow-[0_0_20px_rgba(99,102,241,0.9)]`}
+              onClick={(e) => { 
+                e.stopPropagation();
+                if (link) window.open(link, '_blank');
+              }}
+            >
+              {buttonText}
+            </button>
+          )}
+        </div>
       </div>
-    </div>
-  </motion.div>
-);
+    </motion.div>
+  );
+};
 
 // --- Main Page Component ---
 const SexyDownloadingPage: FC = () => {
@@ -73,7 +79,6 @@ const SexyDownloadingPage: FC = () => {
 
   const terraboxLink = "https://terrabox.example.com/project_data_matrix";
   const gitCommand = "git clone https://github.com/ahmed-jawad-5/UDP_server_NetworkApplication.git";
-  const docsLink = "/documentation/README.md"; // Internal docs route
 
   const handleSelectOption = (option: 'terrabox' | 'git') => {
     setSelectedOption(option);
@@ -91,13 +96,11 @@ const SexyDownloadingPage: FC = () => {
   };
 
   const router = useRouter();
-  const goToDocs = () => {
-    router.push("/docs");
-  };
+  const goToDocs = () => router.push("/docs");
 
   return (
     <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background */}
+      {/* Background Effects */}
       <div className="absolute inset-0 bg-[size:50px_50px] bg-grid-white/5 [mask-image:radial-gradient(transparent,black)]"></div>
       <div className="absolute top-1/2 left-1/2 w-[1000px] h-[1000px] bg-indigo-700/10 rounded-full blur-[250px] animate-pulse-slow"></div>
 
@@ -119,7 +122,7 @@ const SexyDownloadingPage: FC = () => {
           </p>
         </header>
 
-        {/* Option Grid */}
+        {/* Options Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <DownloadOptionCard
             icon={Link}
