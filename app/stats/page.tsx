@@ -113,7 +113,7 @@ export default function StatsPage() {
           className="relative flex justify-center w-full max-w-6xl mx-auto py-16 px-4 md:px-8 bg-white/5 backdrop-blur-xl rounded-[50px] border border-white/10 shadow-[0_0_80px_rgba(0,191,255,0.2)] mt-20 perspective-1000 transform-gpu"
         >
             <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 px-10 py-3 bg-gradient-to-r from-pink-500 to-red-500 text-white font-extrabold rounded-full text-base uppercase tracking-widest shadow-xl mb-4">
-                SYSTEM STATS V2.0
+                CYBER SENTINEL V2.0
             </div>
             <Carousel slides={slides} />
             

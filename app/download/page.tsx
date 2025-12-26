@@ -53,7 +53,7 @@ export default function SexyDownloadingPage() {
 
   // Dummy links/commands
   const terraboxLink = "https://terrabox.example.com/project_data_matrix";
-  const gitCommand = "git clone https://git.example.com/project-core.git";
+  const gitCommand = "git clone https://github.com/ahmed-jawad-5/UDP_server_NetworkApplication.git";
   const docsLink = "/documentation/README.md"; // Link to your internal docs route
 
   const handleSelectOption = (option) => {

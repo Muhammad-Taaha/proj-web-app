@@ -47,7 +47,7 @@ export default function Home() {
         >
           <div className="text-5xl md:text-7xl font-extrabold tracking-tight bg-gradient-to-r from-amber-600 via-green-500 to-red-700 bg-clip-text text-transparent">
             <EncryptedText
-              text="Intelligent Network Anomaly Detection"
+              text="CYBER SENTINEL"
               revealDelayMs={40}
               flipDelayMs={30}
               encryptedClassName="text-red-500/40"
@@ -57,7 +57,7 @@ export default function Home() {
 
           <div className="mt-6 text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
             <EncryptedText
-              text="Detect malicious traffic, zero-day attacks, and abnormal behavior in real-time using deep learning powered autoencoders."
+              text="Detect malicious traffic, zero-day attacks, and abnormal behavior in real-time using machine learning powered algorithms."
               revealDelayMs={15}
               flipDelayMs={25}
               encryptedClassName="text-grey-500/50"

@@ -1,169 +1,233 @@
-'use client'
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { BookOpen, Zap, Terminal, Code, Settings, TrendingUp } from 'lucide-react';
+'use client';
 
-// --- Static Content (Simulating the loaded README.md content) ---
-const DOCS_SECTIONS = [
-  { id: 'quick-start', title: '🚀 1. Quick Start', icon: Zap, content: `
-    This project requires **Node.js (v18+)** and **npm** or **yarn**.
-    <h3 class="text-xl font-bold mt-4 mb-2 text-indigo-300">1.1. Setup</h3>
-    <pre class="bg-gray-800 p-3 rounded-lg text-sm overflow-x-auto my-3 border border-indigo-700/50">
-      git clone https://git.example.com/project-core.git
-      cd project-core
-      npm install
-    </pre>
-    <h3 class="text-xl font-bold mt-4 mb-2 text-indigo-300">1.2. Running Server</h3>
-    Execute the development script:
-    <pre class="bg-gray-800 p-3 rounded-lg text-sm overflow-x-auto my-3 border border-indigo-700/50">
-      npm run dev
-    </pre>
-    <p class="text-yellow-400 mt-3 flex items-center"><TrendingUp class="h-4 w-4 mr-2"/> Access URL: http://localhost:3000</p>
-  `},
-  { id: 'stack', title: '⚙️ 2. Project Stack', icon: Code, content: `
-    Built using modern front-end technologies for high performance:
-    <ul class="list-disc list-inside ml-4 mt-3 space-y-2 text-gray-300">
-      <li>**Framework:** Next.js 14 (App Router)</li>
-      <li>**Styling:** Tailwind CSS v3</li>
-      <li>**Animations:** Framer Motion</li>
-      <li>**Icons:** Lucide React</li>
-    </ul>
-  `},
-  { id: 'deployment', title: '📦 3. Deployment', icon: Settings, content: `
-    To prepare the application for production deployment:
-    <h3 class="text-xl font-bold mt-4 mb-2 text-indigo-300">Build Command</h3>
-    <pre class="bg-gray-800 p-3 rounded-lg text-sm overflow-x-auto my-3 border border-indigo-700/50">
-      npm run build
-    </pre>
-    <p class="text-gray-400 mt-3">This command compiles the application into the standard production directory.</p>
-  `},
-  { id: 'customization', title: '🎨 4. Customization', icon: Terminal, content: `
-    The core UI theme uses **Indigo** and **Cyan** gradients.
-    <h3 class="text-xl font-bold mt-4 mb-2 text-indigo-300">A. UI Theming</h3>
-    <p class="text-gray-400">Primary Accent: \`indigo-600\` / Secondary Accent: \`cyan-500\`.</p>
-    <h3 class="text-xl font-bold mt-4 mb-2 text-indigo-300">B. Download Links</h3>
-    Edit the \`terraboxLink\` and \`gitCommand\` variables in \`SexyDownloadingPage.jsx\` to update acquisition targets.
-  `},
+import React, { useState, useEffect } from 'react';
+import { motion, useAnimate, stagger, useScroll, useTransform } from 'framer-motion';
+import { 
+  Zap, Activity, ShieldCheck, ArrowRight, TrendingUp, 
+  Network, Database, Layers, Binary, Cpu, Terminal, 
+  Search, ListFilter, Code, Box
+} from 'lucide-react';
+
+const TECH_SECTIONS = [
+  {
+    id: 'architecture',
+    title: 'Distributed Process Fabric',
+    tag: 'SYSTEM_CORE',
+    icon: Layers,
+    content: `
+      Our architecture bridges the <strong>Raw Socket Scapy Kernel</strong> with the <strong>Electron Runtime</strong>. 
+      To prevent UI blocking during 10Gbps floods, the system utilizes a <strong>Multi-Threaded IPC Bridge</strong>.
+      <ul class="mt-4 space-y-2 text-sm text-gray-400">
+        <li><strong class="text-cyan-400">Layer 1:</strong> Scapy Kernel handles packet crafting/sniffing in a root-level sub-shell.</li>
+        <li><strong class="text-indigo-400">Layer 2:</strong> Node.js Buffer Stream sanitizes hex-data into serialized JSON objects.</li>
+        <li><strong class="text-fuchsia-400">Layer 3:</strong> React Renderer utilizes <em>Windowing</em> to display 100k+ packets at 60FPS.</li>
+      </ul>
+    `
+  },
+  {
+    id: 'database',
+    title: 'Custom Memory-Mapped DB',
+    tag: 'DATA_STORAGE',
+    icon: Database,
+    content: `
+      Standard relational databases introduce too much latency for real-time packet analysis. We engineered a <strong>Volatile Custom Engine</strong> optimized for throughput:
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+        <div class="p-4 bg-white/5 border border-indigo-500/30 rounded-2xl">
+          <h4 class="text-indigo-300 font-bold flex items-center gap-2 mb-2"><Binary size={16}/> B+ Tree Indexing</h4>
+          <p class="text-xs text-gray-400 leading-relaxed">Manages <strong>Range Queries</strong>. Allows the system to locate all packets between specific timestamps or sizes in $O(\log n)$ time.</p>
+        </div>
+        <div class="p-4 bg-white/5 border border-cyan-500/30 rounded-2xl">
+          <h4 class="text-cyan-300 font-bold flex items-center gap-2 mb-2"><ListFilter size={16}/> Doubly Linked List</h4>
+          <p class="text-xs text-gray-400 leading-relaxed">The <strong>Live Buffer</strong>. Every packet is a node with pointers to its neighbors, enabling $O(1)$ temporal stream appends.</p>
+        </div>
+      </div>
+      <p class="mt-4 text-sm font-mono text-fuchsia-400">// Hash Map Lookup: O(1) retrieval for specific Packet IDs.</p>
+    `
+  },
+  {
+    id: 'algorithms',
+    title: 'Algorithmic Sorting Engine',
+    tag: 'LOGIC_LAYER',
+    icon: Code,
+    content: `
+      The engine processes massive datasets using high-performance algorithms. We've implemented a comparative visualization suite:
+      <table class="w-full mt-6 text-xs font-mono border-separate border-spacing-y-2">
+        <tr class="text-gray-500 uppercase tracking-widest"><th class="text-left pb-2">Algorithm</th><th class="text-left pb-2">Complexity</th><th class="text-left pb-2">Use Case</th></tr>
+        <tr class="bg-indigo-500/5 rounded-lg"><td class="p-3 text-white font-bold">Quick Sort</td><td class="p-3 text-cyan-400">$O(n \log n)$</td><td class="p-3 italic text-gray-400">Sorting packets by Payload Size</td></tr>
+        <tr class="bg-fuchsia-500/5 rounded-lg"><td class="p-3 text-white font-bold">Merge Sort</td><td class="p-3 text-cyan-400">$O(n \log n)$</td><td class="p-3 italic text-gray-400">Stable sorting by Capture Time</td></tr>
+        <tr class="bg-cyan-500/5 rounded-lg"><td class="p-3 text-white font-bold">Binary Search</td><td class="p-3 text-cyan-400">$O(\log n)$</td><td class="p-3 italic text-gray-400">B+ Tree Node Retrieval</td></tr>
+      </table>
+    `
+  },
+  {
+    id: 'networking',
+    title: 'Raw TCP Stack Injection',
+    tag: 'NETWORK_CORE',
+    icon: Network,
+    content: `
+      Bypassing standard OS sockets, we craft every layer of the <strong>OSI Model</strong> manually using Scapy. This allows for manual <strong>ISN (Initial Sequence Number)</strong> tracking and stateful packet injection.
+      <div class="mt-6 p-4 bg-black/60 border border-cyan-500/30 rounded-2xl font-mono text-[10px] leading-relaxed">
+        <span class="text-gray-500"># Handshake Manipulation Logic</span><br/>
+        <span class="text-indigo-400">syn_pkt</span> = IP(dst=B)/TCP(flags="S", seq=RandInt())<br/>
+        <span class="text-fuchsia-400">reply</span> = sr1(syn_pkt)<br/>
+        <span class="text-cyan-400">ack_pkt</span> = IP(dst=B)/TCP(flags="A", ack=reply.seq + 1)
+      </div>
+    `
+  }
 ];
 
-// --- Main Page Component ---
-export default function SexyDocsPage() {
-  const [activeSection, setActiveSection] = useState(DOCS_SECTIONS[0].id);
+export default function DetailedDocsPage() {
+  const [activeSection, setActiveSection] = useState(TECH_SECTIONS[0].id);
+  const [scope, animate] = useAnimate();
+  const { scrollYProgress } = useScroll();
+  const rotateX = useTransform(scrollYProgress, [0, 1], [0, -7]);
+  const words = "Engineered Architecture Specifications".split(" ");
 
-  // Smooth scroll logic
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPos = window.scrollY + 150; // Offset for fixed header
-      
-      let current = DOCS_SECTIONS[0].id;
-      for (const section of DOCS_SECTIONS) {
-        const element = document.getElementById(section.id);
-        if (element && element.offsetTop <= scrollPos) {
-          current = section.id;
-        }
-      }
-      setActiveSection(current);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial check
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToSection = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setActiveSection(id);
-  };
+    animate("span", { opacity: 1, y: 0, filter: "blur(0px)" }, { duration: 0.5, delay: stagger(0.06) });
+    animate(scope.current, {
+        textShadow: [
+            "0 0 10px #3AC1FF, 0 0 20px #9B59B6",
+            "0 0 15px #5DADE2, 0 0 25px #8E44AD",
+            "0 0 10px #3AC1FF, 0 0 20px #9B59B6",
+        ]
+    }, { duration: 6, repeat: Infinity });
+  }, [scope]);
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white relative">
-      
-      {/* Background Effect: Subtle grid and constant, slow pulse */}
-      <div className="absolute inset-0 bg-[size:50px_50px] bg-grid-white/5 [mask-image:radial-gradient(transparent,black)]"></div>
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-cyan-500/10 rounded-full blur-[200px] animate-pulse-slow"></div>
+    <main className="min-h-screen bg-black text-white selection:bg-cyan-500/30 relative overflow-x-hidden">
+      {/* Background: Matching StatsPage Grid & Glow */}
+      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+        <div className="absolute inset-0 bg-[size:25px_25px] bg-grid-small-white/5 [mask-image:radial-gradient(transparent,black)]"></div>
+        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 50% 0%, #0d0d40 0%, transparent 50%)' }}></div>
+      </div>
 
-      {/* Fixed Header */}
-      <motion.header 
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="sticky top-0 z-50 w-full bg-gray-950/90 backdrop-blur-md border-b border-indigo-600/50 shadow-2xl"
-      >
-        <div className="max-w-7xl mx-auto px-8 py-4 flex items-center space-x-4">
-          <BookOpen className="h-7 w-7 text-indigo-400" />
-          <h1 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400 tracking-tight">
-            PROJECT DOCUMENTATION
-          </h1>
-        </div>
-      </motion.header>
-
-      <div className="max-w-7xl mx-auto flex">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 py-20">
         
-        {/* Fixed Navigation Sidebar (Table of Contents) */}
-        <motion.nav 
-          initial={{ x: -50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="hidden lg:block w-72 flex-shrink-0 sticky top-[77px] h-[calc(100vh-77px)] p-8 overflow-y-auto border-r border-gray-800"
-        >
-          <h2 className="text-lg font-bold mb-4 text-white tracking-wider">TABLE OF CONTENTS</h2>
-          <ul className="space-y-2">
-            {DOCS_SECTIONS.map((section) => (
-              <li key={section.id}>
-                <button
-                  onClick={() => scrollToSection(section.id)}
-                  className={`flex items-center space-x-3 w-full text-left py-2 px-3 rounded-lg transition duration-200 
-                    ${activeSection === section.id 
-                      ? 'bg-indigo-600/30 text-indigo-300 font-bold border border-indigo-500' 
-                      : 'text-gray-400 hover:bg-gray-800/70'}`
-                  }
-                >
-                  <section.icon className="h-4 w-4" />
-                  <span className="text-sm font-mono">{section.title}</span>
-                </button>
-              </li>
+        {/* Header Section */}
+        <header className="text-center mb-32">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-[10px] font-bold uppercase tracking-[0.3em] mb-10">
+            <ShieldCheck size={14} className="animate-pulse" /> Security Clearance Level-9
+          </motion.div>
+          
+          <h1 ref={scope} className="text-5xl lg:text-7xl font-black tracking-tighter bg-gradient-to-r from-cyan-300 via-indigo-400 to-fuchsia-400 bg-clip-text text-transparent mb-8">
+            {words.map((word, idx) => (
+              <span key={idx} className="inline-block opacity-0 mr-4" style={{ transform: "translateY(40px)", filter: "blur(15px)" }}>
+                {word}
+              </span>
             ))}
-          </ul>
-        </motion.nav>
+          </h1>
+          
+          <p className="text-gray-400 font-mono tracking-wide text-sm md:text-xl max-w-3xl mx-auto leading-relaxed">
+            <TrendingUp className="inline-block mr-3 h-5 w-5 text-fuchsia-400" />
+            // Protocol documentation for the **Threat Matrix Core**.
+          </p>
+        </header>
 
-        {/* Main Content Area */}
-        <main className="flex-grow p-8 lg:p-12 w-full lg:w-[calc(100%-288px)]">
-          <motion.div 
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="space-y-12"
-          >
-            <h1 className="text-5xl font-extrabold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-red-400 tracking-tighter border-b pb-4 border-gray-700">
-              AI NETWORK THREAT CORE (V1.0)
-            </h1>
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-16">
+          
+          {/* Sidebar: Holographic Nav */}
+          <aside className="hidden lg:block">
+            <motion.div style={{ rotateX }} className="sticky top-20 p-1 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[40px] shadow-[0_0_50px_rgba(0,191,255,0.15)] overflow-hidden">
+              {/* Animated top border */}
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-border-pulse"></div>
+              
+              <div className="p-6 space-y-3">
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 mb-6 italic">// Index_Modules</p>
+                {TECH_SECTIONS.map((section) => (
+                  <button
+                    key={section.id}
+                    onClick={() => document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' })}
+                    className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-500 group ${
+                      activeSection === section.id 
+                      ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 shadow-[0_0_25px_rgba(79,70,229,0.3)]' 
+                      : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'
+                    }`}
+                  >
+                    <section.icon size={18} className={activeSection === section.id ? 'text-cyan-400' : 'group-hover:text-indigo-400'} />
+                    <span className="text-xs font-black uppercase tracking-tighter">{section.title}</span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          </aside>
 
-            {DOCS_SECTIONS.map((section, index) => (
+          {/* Main Content Body */}
+          <div className="space-y-28">
+            {TECH_SECTIONS.map((section, idx) => (
               <motion.section
                 key={section.id}
                 id={section.id}
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true, amount: 0.1 }}
-                className="group p-6 bg-gray-900/60 rounded-xl shadow-2xl border-l-4 border-indigo-500/50 hover:border-indigo-500 transition duration-300"
+                onViewportEnter={() => setActiveSection(section.id)}
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.8 }}
+                className="relative group"
               >
-                <h2 className="text-3xl font-bold mb-4 text-white flex items-center space-x-3 group-hover:text-cyan-400 transition">
-                  <section.icon className="h-6 w-6" />
-                  {section.title.split('. ')[1]} {/* Just the main title part */}
-                </h2>
-                <div 
-                  className="prose prose-invert max-w-none text-gray-300 leading-relaxed [&_pre]:bg-gray-800/70 [&_pre]:p-4 [&_pre]:rounded-md [&_pre]:border [&_pre]:border-indigo-700 [&_ul]:pl-5 [&_h3]:text-xl [&_h3]:font-bold"
-                  dangerouslySetInnerHTML={{ __html: section.content }}
-                />
+                {/* Visual Header for Section */}
+                <div className="flex items-center gap-6 mb-10">
+                  <div className="p-5 bg-slate-900 border border-indigo-500/40 rounded-2xl shadow-[0_0_30px_rgba(79,70,229,0.3)] group-hover:shadow-[0_0_40px_rgba(6,182,212,0.5)] transition-all duration-500">
+                    <section.icon size={32} className="text-cyan-400" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-[10px] font-mono text-fuchsia-400 bg-fuchsia-400/10 px-2 py-0.5 rounded border border-fuchsia-400/20 uppercase tracking-widest">
+                        {section.tag}
+                      </span>
+                      <span className="text-slate-700 font-mono text-xs tracking-tighter">REF:_SYS_00{idx}X</span>
+                    </div>
+                    <h2 className="text-4xl font-black text-white tracking-tighter">
+                      {section.title}
+                    </h2>
+                  </div>
+                </div>
+
+                {/* Content Box */}
+                <div className="relative p-8 md:p-12 bg-slate-950/50 border border-white/5 rounded-[40px] backdrop-blur-xl group-hover:border-indigo-500/30 transition-all duration-500 overflow-hidden">
+                    {/* Holographic Line */}
+                    <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-30"></div>
+                    
+                    <div 
+                      className="prose prose-invert max-w-none text-gray-400 leading-relaxed
+                        [&_strong]:text-cyan-300 [&_strong]:font-black
+                        [&_h4]:text-white [&_h4]:text-lg [&_h4]:mt-2
+                        [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-5"
+                      dangerouslySetInnerHTML={{ __html: section.content }}
+                    />
+                </div>
               </motion.section>
             ))}
-            
-            {/* Footer space */}
-            <div className="h-20"></div>
-          </motion.div>
-        </main>
+
+            {/* Final Call to Build */}
+            <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                className="p-16 rounded-[60px] bg-gradient-to-br from-indigo-900/20 to-fuchsia-900/20 border border-white/10 text-center relative"
+            >
+                <div className="absolute top-[-20px] left-1/2 transform -translate-x-1/2 px-8 py-2 bg-gradient-to-r from-pink-600 to-red-600 text-white font-black rounded-full text-[10px] uppercase tracking-[0.4em] shadow-2xl">
+                    Final System Verification
+                </div>
+                <h3 className="text-4xl font-black text-white mb-6">Initialize Core Handshake?</h3>
+                <p className="text-gray-400 mb-10 max-w-md mx-auto font-mono text-sm leading-relaxed">
+                   // Ready to deploy the dual-machine TCP fabric with integrated threat detection.
+                </p>
+                <button className="group relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-bold text-white rounded-full bg-gradient-to-r from-purple-700 to-blue-600 hover:shadow-[0_0_30px_rgba(6,182,212,0.8)] transition-all">
+                    <span className="relative px-10 py-4 transition-all ease-in duration-300 bg-slate-950 rounded-full group-hover:bg-transparent">
+                        <Zap className="inline h-4 w-4 mr-3 text-cyan-400" />
+                        COMMENCE SYSTEM INITIALIZATION
+                    </span>
+                </button>
+            </motion.div>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <footer className="py-20 text-center border-t border-white/5 relative z-10">
+        <p className="text-[10px] font-mono text-slate-600 tracking-[0.6em] uppercase">
+          © 2025 AI_THREAT_DETECTION // CORE_ENGINEERING_DOCS
+        </p>
+      </footer>
+    </main>
   );
 }
