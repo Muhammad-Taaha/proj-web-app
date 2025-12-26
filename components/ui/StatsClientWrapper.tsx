@@ -1,15 +1,34 @@
 // components/ui/StatsClientWrapper.tsx
 "use client";
 
+import { useMemo } from "react";
+import { motion, useMotionValue, MotionValue } from "framer-motion";
 import { GoogleGeminiEffect } from "./google-gemini-effect";
 import ExplanationModal from "./ExplanationModal";
 
-export const StatsClientWrapper = ({ open, setOpen, pathLengths }) => {
+// Define the props interface
+interface StatsClientWrapperProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  pathLengths: number[]; // input as number array
+}
+
+export const StatsClientWrapper: React.FC<StatsClientWrapperProps> = ({
+  open,
+  setOpen,
+  pathLengths,
+}) => {
+  // Convert number[] to MotionValue<number>[] for Framer Motion
+  const motionPathLengths: MotionValue<number>[] = useMemo(
+    () => pathLengths.map((length) => useMotionValue(length)),
+    [pathLengths]
+  );
+
   return (
     <>
       <div className="mt-32 w-full relative">
         <GoogleGeminiEffect
-          pathLengths={pathLengths}
+          pathLengths={motionPathLengths}
           title="Explore Gemini AI Visuals"
           description="Scroll down and watch these dynamic SVG paths animate beautifully with motion!"
         />
