@@ -5,33 +5,29 @@ import { ShieldCheck, Activity, Radar, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { FaGithub } from "react-icons/fa";
-import { FocusCards } from "@/components/ui/focus-cards"; // import your FocusCards component
+import { FocusCards } from "@/components/ui/focus-cards";
+
+interface Contributor {
+  title: string;
+  src: string;
+  github: string;
+}
+
+interface FeatureProps {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+}
 
 export default function Home() {
   const router = useRouter();
-  const changing = () => {
-    router.push("/stats");
-  };
-  const changing2 = () => {
-    router.push("/download");
-  };
-  // Contributors data
-  const contributors = [
-    {
-      title: "Muhammad Taaha",
-      src: "/taaha.jpg", // replace with actual image paths
-      github: "https://github.com/Muhammad-Taaha"
-    },
-    {
-      title: "Ahmed Jawad",
-      src: "/ahmed.jpg",
-      github: "https://github.com/ahmed-jawad-5"
-    },
-    {
-      title: "Ali Asgher",
-      src: "/ali.jpg",
-      github: "https://github.com/AliAsghar954"
-    }
+  const changing = () => router.push("/stats");
+  const changing2 = () => router.push("/download");
+
+  const contributors: Contributor[] = [
+    { title: "Muhammad Taaha", src: "/taaha.jpg", github: "https://github.com/Muhammad-Taaha" },
+    { title: "Ahmed Jawad", src: "/ahmed.jpg", github: "https://github.com/ahmed-jawad-5" },
+    { title: "Ali Asgher", src: "/ali.jpg", github: "https://github.com/AliAsghar954" }
   ];
 
   return (
@@ -75,7 +71,6 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* Glow Orbs */}
         <div className="absolute -top-32 -left-32 w-96 h-96 bg-blue-600/30 rounded-full blur-3xl" />
         <div className="absolute top-1/3 -right-32 w-96 h-96 bg-green-400/30 rounded-full blur-3xl" />
       </section>
@@ -83,30 +78,14 @@ export default function Home() {
       {/* FEATURES */}
       <section className="relative z-10 px-6 pb-32">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Feature
-            icon={<Radar size={28} />}
-            title="Real‑Time Detection"
-            desc="Live packet inspection and anomaly scoring with millisecond latency."
-          />
-          <Feature
-            icon={<Activity size={28} />}
-            title="XGBoost Based"
-            desc="Unsupervised deep learning trained on normal traffic behavior."
-          />
-          <Feature
-            icon={<ShieldCheck size={28} />}
-            title="Threat Prevention"
-            desc="Identify intrusions, scans, and data exfiltration patterns."
-          />
-          <Feature
-            icon={<Zap size={28} />}
-            title="High Performance"
-            desc="Optimized inference pipeline for high‑throughput networks."
-          />
+          <Feature icon={<Radar size={28} />} title="Real‑Time Detection" desc="Live packet inspection and anomaly scoring with millisecond latency." />
+          <Feature icon={<Activity size={28} />} title="XGBoost Based" desc="Unsupervised deep learning trained on normal traffic behavior." />
+          <Feature icon={<ShieldCheck size={28} />} title="Threat Prevention" desc="Identify intrusions, scans, and data exfiltration patterns." />
+          <Feature icon={<Zap size={28} />} title="High Performance" desc="Optimized inference pipeline for high‑throughput networks." />
         </div>
       </section>
 
-      {/* CONTRIBUTORS SECTION */}
+      {/* CONTRIBUTORS */}
       <section className="px-6 pb-40">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -114,9 +93,7 @@ export default function Home() {
           transition={{ duration: 0.8 }}
           className="max-w-6xl mx-auto bg-gradient-to-br from-slate-900 to-black border border-slate-800 rounded-3xl p-8 shadow-2xl"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">
-            Meet the Contributors
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">Meet the Contributors</h2>
           <p className="text-gray-400 mb-8 text-center max-w-2xl mx-auto">
             These talented developers have contributed to building the Intelligent Network Anomaly Detection System.
           </p>
@@ -133,17 +110,16 @@ export default function Home() {
   );
 }
 
-function Feature({ icon, title, desc }) {
-  return (
-    <motion.div
-      whileHover={{ y: -6 }}
-      className="bg-gradient-to-br from-slate-900 to-black border border-slate-800 rounded-2xl p-6 shadow-lg"
-    >
-      <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400 mb-4">
-        {icon}
-      </div>
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-gray-400 text-sm">{desc}</p>
-    </motion.div>
-  );
-}
+// --- Feature Component with proper typing ---
+const Feature: React.FC<FeatureProps> = ({ icon, title, desc }) => (
+  <motion.div
+    whileHover={{ y: -6 }}
+    className="bg-gradient-to-br from-slate-900 to-black border border-slate-800 rounded-2xl p-6 shadow-lg"
+  >
+    <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400 mb-4">
+      {icon}
+    </div>
+    <h3 className="text-lg font-semibold mb-2">{title}</h3>
+    <p className="text-gray-400 text-sm">{desc}</p>
+  </motion.div>
+);
