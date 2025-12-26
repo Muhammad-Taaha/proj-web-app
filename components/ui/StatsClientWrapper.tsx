@@ -1,16 +1,23 @@
 // components/ui/StatsClientWrapper.tsx
 "use client";
 
+import React from "react";
+import { useMotionValue, MotionValue } from "motion/react";
 import { GoogleGeminiEffect } from "./google-gemini-effect";
 import ExplanationModal from "./ExplanationModal";
 
 interface StatsClientWrapperProps {
   open: boolean;
   setOpen: (value: boolean) => void;
-  pathLengths: number[]; // Adjust type if different
 }
 
-export const StatsClientWrapper: React.FC<StatsClientWrapperProps> = ({ open, setOpen, pathLengths }) => {
+export const StatsClientWrapper: React.FC<StatsClientWrapperProps> = ({ open, setOpen }) => {
+  // Create an array of MotionValues for the paths (5 paths in the SVG)
+  const pathLengths: MotionValue<number>[] = React.useMemo(
+    () => Array.from({ length: 5 }, () => useMotionValue(0)),
+    []
+  );
+
   return (
     <>
       <div className="mt-32 w-full relative">
